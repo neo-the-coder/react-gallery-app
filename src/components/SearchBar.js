@@ -9,11 +9,12 @@ function SearchBar({ setContent }) {
     e.preventDefault();
     if (query) {
       client.photos
-        .search({ query, per_page: 25 })
-        .then((content) => setContent(content))
+        .search({ query, per_page: 20 })
+        .then(({ next_page, photos, total_results }) => {
+          setContent({ query, next_page, photos, total_results });
+        })
         .catch((e) => console.log(e));
     }
-    // console.log('response is:', response);
   };
 
   return (

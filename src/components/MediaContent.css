@@ -5,7 +5,7 @@
 }
 
 .media-container {
-    min-height: 60vh;
+    min-height: 70vh;
     padding: 1vw;
     outline: 1px solid violet;
     display: flex;
@@ -28,12 +28,15 @@
 }
 
 .content {
-
+    max-height: 350px;
+    border-radius: 0.75em;
+    cursor: zoom-in;
 }
 
 .content > img{
-    /* border-radius: 5px; */
     /* height: 350px; */
+    display: block;
+    border-radius: 0.75em;
     object-fit: cover;
     width: 100%;
 }
@@ -55,4 +58,17 @@ button#load_btn {
 
 .media-container p {
     text-align: center;
+}
+
+.wrapper {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.9);
+	z-index: 1000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
