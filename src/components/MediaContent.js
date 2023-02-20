@@ -1,25 +1,47 @@
-import React, { useEffect, useRef, useState } from "react";
-import ImageGallery from 'react-image-gallery';
+import React, { useEffect, useState } from "react";
+import Gallery from "./Gallery";
+import { ReactComponent as UserIcon } from "../assets/user.svg";
+import { ReactComponent as Enlarge } from "../assets/enlarge.svg";
 import "./MediaContent.css";
 
 function MediaContent({ content, setContent }) {
   console.log("HERE is CONTENT", content);
-  const [isOpenGallery, setIsOpenGallery] = useState(false);
-  const [slideDuration, setSlideDuration] = useState(0);
+  const [gallery, setGallery] = useState({ isOpen: false, index: null });
   const [galleryContent, setGalleryContent] = useState([]);
-  const galleryRef = useRef();
 
   const toGallery = (photos) => {
     const galleryArr = [];
     photos.forEach((photo) => {
       galleryArr.push({
         thumbnail: photo.src.tiny,
+        thumbnailLoading: "eager",
         original: photo.src.large,
-        fullscreen: photo.src.original,
-        embedUrl: photo.url,
+        originalHeight: "100%",
+        // loading: "eager",
+        // embedUrl: photo.url,
+        // thumbnailLabel: photo.alt,
+        originalAlt: photo.alt,
+        thumbnailAlt: photo.alt,
+        thumbnailTitle: photo.alt,
         description: (
           <>
-            Photo by <a href={photo.photographer_url}>{photo.photographer}</a>
+            <UserIcon className="image-gallery-icon svg-icon" id="user-icon" />
+            <a
+              id="photo-author"
+              href={photo.photographer_url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {photo.photographer}
+            </a>
+            <a
+              href={photo.src.original}
+              target="_blank"
+              rel="noreferrer"
+              id="enlarge-icon"
+            >
+              <Enlarge className="image-gallery-icon svg-icon" />
+            </a>
           </>
         ),
       });
@@ -37,12 +59,12 @@ function MediaContent({ content, setContent }) {
       })
       .then(({ next_page, photos }) => {
         // if (photos.length > 0) {
-          setContent((prevState) => ({
-            ...prevState,
-            next_page,
-            photos: [...prevState.photos, ...photos],
-          }));
-          setGalleryContent(prevState => [...prevState, ...toGallery(photos)])
+        setContent((prevState) => ({
+          ...prevState,
+          next_page,
+          photos: [...prevState.photos, ...photos],
+        }));
+        setGalleryContent((prevState) => [...prevState, ...toGallery(photos)]);
         // }
       })
       .catch((error) => {
@@ -50,27 +72,17 @@ function MediaContent({ content, setContent }) {
       });
   };
 
-  const openGallery = (index) => {
-    // console.log('INDEX iS', index)
-    // console.log(galleryRef.current)
-    console.log(isOpenGallery)
-    setSlideDuration(400);
-    setIsOpenGallery(true);
-    galleryRef.current.slideToIndex(index);
-  }
-
-  const closeGallery = (e) => {
-    e.stopPropagation();
-    setIsOpenGallery(false);
-  }
+  const onZoomIn = (index) => {
+    setGallery({ isOpen: true, index });
+  };
 
   useEffect(() => {
     if (content.total_results > 0) {
-      setGalleryContent(toGallery(content.photos))
+      setGalleryContent(toGallery(content.photos));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content.query]);
-  
+
   return (
     <div className="content-wrapper">
       {/* Search Result Statistics */}
@@ -92,7 +104,7 @@ function MediaContent({ content, setContent }) {
                 backgroundColor: photo.avg_color,
               }}
               role="button"
-              onClick={() => openGallery(index)}
+              onClick={() => onZoomIn(index)}
             >
               <img src={photo.src.medium} alt={photo.alt} loading="lazy" />
             </div>
@@ -107,14 +119,12 @@ function MediaContent({ content, setContent }) {
         </button>
       )}
 
-      {isOpenGallery && (
-        <div className="wrapper" onClick={(e) => closeGallery(e)}>
-          <ImageGallery
-            ref={galleryRef}
-            items={galleryContent}
-            slideDuration={slideDuration}
-          />
-        </div>
+      {gallery.isOpen && (
+        <Gallery
+          index={gallery.index}
+          items={galleryContent}
+          setGallery={setGallery}
+        />
       )}
     </div>
   );
