@@ -8,6 +8,7 @@ function MediaContent({ content, setContent }) {
   console.log("HERE is CONTENT", content);
   const [gallery, setGallery] = useState({ isOpen: false, index: null });
   const [galleryContent, setGalleryContent] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toGallery = (photos) => {
     const galleryArr = [];
@@ -17,7 +18,7 @@ function MediaContent({ content, setContent }) {
         thumbnailLoading: "eager",
         original: photo.src.large,
         originalHeight: "100%",
-        // loading: "eager",
+        loading: "lazy",
         // embedUrl: photo.url,
         // thumbnailLabel: photo.alt,
         originalAlt: photo.alt,
@@ -50,9 +51,11 @@ function MediaContent({ content, setContent }) {
   };
 
   const onLoadMore = (url) => {
+    setIsLoading(true);
     fetch(url)
       .then((response) => {
         if (!response.ok) {
+          // setIsLoading(false);
           throw new Error(`An error has been occured: ${response.status}`);
         }
         return response.json();
@@ -69,7 +72,8 @@ function MediaContent({ content, setContent }) {
       })
       .catch((error) => {
         console.error(`Could not get content: ${error}`);
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const onZoomIn = (index) => {
@@ -94,28 +98,31 @@ function MediaContent({ content, setContent }) {
 
       {/* Media Container */}
       <div className="media-container">
-        {content.total_results ? (
-          content.photos.map((photo, index) => (
-            <div
-              key={photo.id}
-              className="content"
-              style={{
-                width: `${Math.floor((photo.width * 350) / photo.height)}px`,
-                backgroundColor: photo.avg_color,
-              }}
-              role="button"
-              onClick={() => onZoomIn(index)}
-            >
-              <img src={photo.src.medium} alt={photo.alt} loading="lazy" />
-            </div>
-          ))
+        {content.query && (content.total_results ? (
+          <>
+            {content.photos.map((photo, index) => (
+              <div
+                key={photo.id}
+                className="content"
+                style={{
+                  width: `${Math.floor((photo.width * 130) / photo.height)}px`,
+                  backgroundColor: photo.avg_color,
+                }}
+                role="button"
+                onClick={() => onZoomIn(index)}
+              >
+                <img src={photo.src.small} alt={photo.alt} title={photo.alt} loading="lazy" />
+              </div>
+            ))}
+            <div id="last-content"></div>
+          </>
         ) : (
-          <p>It seems there aren't any matches for your search term</p>
-        )}
+          <p id="no-result-text">It seems there aren't any matches for your search term</p>
+        ))}
       </div>
       {content.next_page && (
-        <button id="load_btn" onClick={() => onLoadMore(content.next_page)}>
-          Load More
+        <button id="load_btn" onClick={() => onLoadMore(content.next_page)} disabled={isLoading}>
+          {isLoading ? (<span id="loading-icon"> Loading...</span>) : "Load More"}
         </button>
       )}
 

@@ -1,20 +1,30 @@
 .content-wrapper {
     width: 80vw;
-    min-width: 350px;
+    /* min-width: 350px; */
     margin: 0.5em auto;
 }
 
 .media-container {
     min-height: 70vh;
-    padding: 1vw;
-    outline: 1px solid violet;
+    /* padding: 1vw; */
+    /* outline: 1px solid violet; */
     display: flex;
     flex-flow: row wrap;
     align-items: center;
     justify-content: space-evenly;
+    align-content: flex-start;
     gap: 10px 20px;
     /* column-count: 7; */
     /*column-gap: 20px; */
+}
+
+.media-container #last-content {
+    margin-left: auto;
+}
+
+#no-result-text {
+    align-self: flex-start;
+    margin-top: 1em;
 }
 
 .stats {
@@ -28,17 +38,22 @@
 }
 
 .content {
-    max-height: 350px;
-    border-radius: 0.75em;
+    /* max-height: 350px; */
+    border-radius: 0.25em;
     cursor: zoom-in;
 }
 
 .content > img{
     /* height: 350px; */
     display: block;
-    border-radius: 0.75em;
+    border-radius: 0.25em;
     object-fit: cover;
     width: 100%;
+}
+
+button {
+    background-color: #1a73e8;
+    color: #fff;
 }
 
 button#load_btn {
@@ -46,11 +61,30 @@ button#load_btn {
     margin: 1em auto;
 }
 
-
-/* @media only screen and (min-width:576px) {
-
+#loading-icon::before {
+    content: "";
+    width: 0.75em;
+    height: 0.75em;
+    display: inline-block;
+    vertical-align: middle;
+    border: 0.125em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: loading-animation .85s linear infinite;
+    margin-right: 0.1em;
 }
 
+@media only screen and (max-width:300px) {
+    .content {
+        width: 100% !important;
+        margin: 5px 20px;
+    }
+    .media-container #last-content {
+        margin-left: 0;
+    }
+}
+
+/*
 @media only screen and (min-width:768px) {
 
 } */
@@ -70,7 +104,7 @@ button#load_btn {
 }
 
 
-/* Content Author description style */
+/* Media Content Author description style */
 .svg-icon {
     height: 28px;
     width: 28px;
@@ -99,6 +133,14 @@ button#load_btn {
     width: 16px;
     margin-top: 4px;
 }
+
+
+@keyframes loading-animation {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+} 
 
 @media only screen and (min-width:480px) {
     #user-icon {
