@@ -1,10 +1,35 @@
-import { useState } from 'react';
-import './App.css';
+import { useEffect, useState } from 'react';
 import MediaContent from './MediaContent';
 import SearchBar from './SearchBar';
-
+import { ReactComponent as Up } from "../assets/chevron-up.svg";
+import './App.css';
 function App() {
-  const[content, setContent] = useState({});
+  const [content, setContent] = useState({});
+  const [showScroll, setShowScroll] = useState(false)
+  
+  const toggleScrollButton = () => {
+    if (window.scrollY >= 250) {
+      if (!showScroll) setShowScroll(true);
+    } else {
+      if (showScroll) setShowScroll(false);
+    }
+  };
+  
+  const scrollToTop = () =>{
+    window.scrollTo({
+      top: 0, 
+      behavior: 'smooth'
+    });
+  };
+  
+  useEffect(() => {
+    document.addEventListener('scroll', toggleScrollButton);
+    return () => {
+      document.removeEventListener('scroll', toggleScrollButton);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showScroll]);
+
 
   return (
     <div className="App">
@@ -35,6 +60,7 @@ function App() {
           </p>
         </div>
       </footer>
+      {showScroll && <button id="scroll-btn" onClick={scrollToTop}><Up /></button> }
     </div>
   );
 }

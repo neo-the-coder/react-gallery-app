@@ -45,6 +45,10 @@
 
 .image-gallery-slide .image-gallery-image {
     object-fit: scale-down;
+    /* background: red; */
+    background-image: url(../assets/spinner.svg);
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .image-gallery-slide-wrapper,
