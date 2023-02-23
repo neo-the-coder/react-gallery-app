@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { client } from "../api/pexelAPI";
 import Gallery from "./Gallery";
 import { ReactComponent as UserIcon } from "../assets/user.svg";
 import { ReactComponent as Enlarge } from "../assets/enlarge.svg";
@@ -50,21 +51,16 @@ function MediaContent({ content, setContent }) {
     return galleryArr;
   };
 
-  const onLoadMore = (url) => {
+  const onLoadMore = () => {
     setIsLoading(true);
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          // setIsLoading(false);
-          throw new Error(`An error has been occured: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(({ next_page, photos }) => {
+    client.photos
+      .search({ query: content.query, page: content.page, per_page: 20 })
+      .then(({ page, next_page, photos }) => {
         // if (photos.length > 0) {
         setContent((prevState) => ({
           ...prevState,
           next_page,
+          page: page + 1,
           photos: [...prevState.photos, ...photos],
         }));
         setGalleryContent((prevState) => [...prevState, ...toGallery(photos)]);
@@ -121,7 +117,7 @@ function MediaContent({ content, setContent }) {
         ))}
       </div>
       {content.next_page && (
-        <button id="load_btn" onClick={() => onLoadMore(content.next_page)} disabled={isLoading}>
+        <button id="load_btn" onClick={onLoadMore} disabled={isLoading}>
           {isLoading ? (<span id="loading-icon"> Loading...</span>) : "Load More"}
         </button>
       )}

@@ -2,16 +2,22 @@ import React, { useState } from "react";
 import { client } from "../api/pexelAPI";
 import "./SearchBar.css";
 
-function SearchBar({ setContent }) {
+function SearchBar({ content, setContent }) {
   const [query, setQuery] = useState("");
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (query) {
+    if (query && query !== content.query) {
       client.photos
         .search({ query, per_page: 20 })
-        .then(({ next_page, photos, total_results }) => {
-          setContent({ query, next_page, photos, total_results });
+        .then(({ page, next_page, photos, total_results }) => {
+          setContent({
+            query,
+            page: page + 1,
+            next_page,
+            photos,
+            total_results,
+          });
         })
         .catch((e) => console.log(e));
     }

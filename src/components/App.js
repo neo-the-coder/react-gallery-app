@@ -34,7 +34,7 @@ function App() {
   return (
     <div className="App">
       <h1 id="app-title">React Gallery App</h1>
-      <SearchBar setContent={setContent} />
+      <SearchBar content={content} setContent={setContent} />
       <MediaContent content={content} setContent={setContent} />
       <footer>
         <div id="footer-wrapper">
