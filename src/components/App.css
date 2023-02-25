@@ -78,6 +78,12 @@ footer p {
   padding: 0.75em;
 }
 
+#scroll-btn:active {
+  background-color: #fff;
+  color: #1a73e8;
+  border: 2px solid #1a73e8;
+}
+
 #scroll-btn svg {
   display: block;
 }

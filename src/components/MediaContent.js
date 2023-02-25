@@ -6,7 +6,6 @@ import { ReactComponent as Enlarge } from "../assets/enlarge.svg";
 import "./MediaContent.css";
 
 function MediaContent({ content, setContent }) {
-  console.log("HERE is CONTENT", content);
   const [gallery, setGallery] = useState({ isOpen: false, index: null });
   const [galleryContent, setGalleryContent] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,6 +67,7 @@ function MediaContent({ content, setContent }) {
       })
       .catch((error) => {
         console.error(`Could not get content: ${error}`);
+        setContent((prevState) => ({ ...prevState, isError: error }));
       })
       .finally(() => setIsLoading(false));
   };
@@ -93,32 +93,54 @@ function MediaContent({ content, setContent }) {
       )}
 
       {/* Media Container */}
-      <div className="media-container">
-        {content.query && (content.total_results ? (
-          <>
-            {content.photos.map((photo, index) => (
-              <div
-                key={photo.id}
-                className="content"
-                style={{
-                  width: `${Math.floor((photo.width * 130) / photo.height)}px`,
-                  backgroundColor: photo.avg_color,
-                }}
-                role="button"
-                onClick={() => onZoomIn(index)}
-              >
-                <img src={photo.src.small} alt={photo.alt} title={photo.alt} loading="lazy" />
-              </div>
-            ))}
-            <div id="last-content"></div>
-          </>
-        ) : (
-          <p id="no-result-text">It seems there aren't any matches for your search term</p>
-        ))}
+      <div className="content-container">
+        {/* Loading spinner */}
+        {content.isLoading && (
+          <span id="loading-icon" className="loading-center"></span>
+        )}
+
+        {/* Content or No result notification */}
+        {content.query &&
+          (content.total_results ? (
+            <div className="media-container">
+              {content.photos.map((photo, index) => (
+                <div
+                  key={photo.id}
+                  className="content"
+                  style={{
+                    width: `${Math.floor(
+                      (photo.width * 130) / photo.height
+                    )}px`,
+                    backgroundColor: photo.avg_color,
+                  }}
+                  role="button"
+                  onClick={() => onZoomIn(index)}
+                >
+                  <img
+                    src={photo.src.small}
+                    alt={photo.alt}
+                    title={photo.alt}
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+              <div id="last-content"></div>
+            </div>
+          ) : (
+            <p id="no-result-text">
+              It seems there aren't any matches for your search term
+            </p>
+          ))}
+
+        {/* Error message */}
+        {content.isError && (
+          <p id="error-text">{`${content.isError.name}. ${content.isError.message}`}</p>
+        )}
+
       </div>
       {content.next_page && (
         <button id="load_btn" onClick={onLoadMore} disabled={isLoading}>
-          {isLoading ? (<span id="loading-icon"> Loading...</span>) : "Load More"}
+          {isLoading ? <span id="loading-icon"> Loading...</span> : "Load More"}
         </button>
       )}
 

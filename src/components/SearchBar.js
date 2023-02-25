@@ -8,6 +8,7 @@ function SearchBar({ content, setContent }) {
   const onSubmit = (e) => {
     e.preventDefault();
     if (query && query !== content.query) {
+      setContent({isLoading: true});
       client.photos
         .search({ query, per_page: 20 })
         .then(({ page, next_page, photos, total_results }) => {
@@ -19,7 +20,10 @@ function SearchBar({ content, setContent }) {
             total_results,
           });
         })
-        .catch((e) => console.log(e));
+        .catch((e) => {
+          console.log(e);
+          setContent({isError: e})
+        });
     }
   };
 

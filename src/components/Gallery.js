@@ -8,7 +8,6 @@ function Gallery({ index, items, setGallery }) {
   const galleryRef = useRef();
 
   const closeGallery = () => {
-    // setGallery({isOpen: false, slideDuration: 0, index: null})
     setGallery({ isOpen: false, index: null });
   };
 
@@ -19,7 +18,6 @@ function Gallery({ index, items, setGallery }) {
   }
 
   useEffect(() => {
-    console.log("USEFFECT HAS BEEN CALLED");
     galleryRef.current.fullScreen();
     galleryRef.current.slideToIndex(index);
     setSlideDuration(300);
@@ -43,11 +41,10 @@ function Gallery({ index, items, setGallery }) {
           ref={galleryRef}
           items={items}
           slideDuration={slideDuration}
+          slideInterval={2500}
           showIndex
           useBrowserFullscreen={false}
           showFullscreenButton={false}
-          // thumbnailPosition="left"
-          // useBrowserFullscreen={"false"}
         />
       </div>
     </div>
