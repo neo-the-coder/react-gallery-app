@@ -1,3 +1,11 @@
+# React Gallery App
+
+React app where you can search for images and view in gallery. 
+
+Live demo: https://react-gallery-app-neo.netlify.app/
+
+You need API key for the app to work. Get yours from: https://www.pexels.com/api/new/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
